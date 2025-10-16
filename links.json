@@ -2,51 +2,27 @@
   "links": [
     {
       "title": "YouTube",
-      "subtitle": "Kanal Resmi",
+      "subtitle": " ",
       "url": "https://youtube.com/@ahmadrijaniofficial?si=806boP2yOf5pcYI4",
-      "icon": "fab fa-youtube",
-      "lock": false,
-      "hide": false
+      "icon": "fab fa-youtube"
     },
     {
       "title": "Saweria",
       "subtitle": "Dukung KuningMinum",
       "url": "https://saweria.co/KuningMinum",
-      "icon": "fas fa-hand-holding-heart",
-      "lock": false,
-      "hide": false
+      "icon": "fas fa-hand-holding-heart"
     },
     {
       "title": "Blogspot",
       "subtitle": "Blog Resmi",
       "url": "https://ahmadrijaniofficial.blogspot.com/",
-      "icon": "fas fa-blog",
-      "lock": false,
-      "hide": false
+      "icon": "fas fa-blog"
     },
     {
       "title": "GitHub",
       "subtitle": "Repositori Kode",
       "url": "https://kuningminum.github.io/kuningminum/",
-      "icon": "fab fa-github",
-      "lock": false,
-      "hide": false
-    },
-    {
-      "title": "Link Terkunci",
-      "subtitle": "Belum Bisa Dibuka",
-      "url": "#",
-      "icon": "fas fa-lock",
-      "lock": true,
-      "hide": false
-    },
-    {
-      "title": "Link Tersembunyi",
-      "subtitle": "Tidak Ditampilkan",
-      "url": "https://contoh.com",
-      "icon": "fas fa-eye-slash",
-      "lock": true,
-      "hide": false
+      "icon": "fab fa-github"
     }
   ]
 }
