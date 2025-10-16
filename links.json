@@ -1,28 +1,28 @@
 {
   "links": [
     {
-      "icon": "fa-brands fa-github",
-      "title": "Halaman GitHub Pages",
-      "subtitle": "kuningminum.github.io",
-      "url": "https://kuningminum.github.io/kuningminum/"
+      "title": "GitHub",
+      "subtitle": "Repositori resmi",
+      "url": "https://github.com/kuningminum",
+      "icon": "fab fa-github",
+      "hide": false,
+      "lock": false
     },
     {
-      "icon": "fa-solid fa-hand-holding-dollar",
-      "title": "Donasi / Saweria",
-      "subtitle": "saweria.co/KuningMinum",
-      "url": "https://saweria.co/KuningMinum"
+      "title": "Blog",
+      "subtitle": "Blog pribadi",
+      "url": "https://blogspot.com/kuningminum",
+      "icon": "fas fa-blog",
+      "hide": false,
+      "lock": true
     },
     {
-      "icon": "fa-brands fa-blogger",
-      "title": "Blog Ahmad Rijani",
-      "subtitle": "ahmadrijaniofficial.blogspot.com",
-      "url": "https://ahmadrijaniofficial.blogspot.com/"
-    },
-    {
-      "icon": "fa-brands fa-youtube",
-      "title": "YouTube — Ahmad Rijani Official",
-      "subtitle": "youtube.com/@ahmadrijaniofficial",
-      "url": "https://youtube.com/@ahmadrijaniofficial?si=806boP2yOf5pcYI4"
+      "title": "Saweria",
+      "subtitle": "Donasi online",
+      "url": "https://saweria.co/KuningMinum",
+      "icon": "fas fa-money-bill-wave",
+      "hide": true,
+      "lock": false
     }
   ]
 }
