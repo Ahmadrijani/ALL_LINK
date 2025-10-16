@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Pusat Link — KuningMinum</title>
   <meta name="description" content="Pusat link resmi: GitHub Pages, Saweria, Blogspot, dan YouTube." />
+
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-ncB6xkOvsWZ9n3YxW+WzLgNnEtgRHczr52E9PKKmJXkKRJ09D4HzPnD77Rk3nGPTe/8YjKmfvABYIQE9T5x7qw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
   <style>
     :root{
       --bg:#0f1724;
@@ -24,13 +28,11 @@
                   radial-gradient(1000px 400px at 90% 80%, rgba(10,150,220,0.06), transparent 6%),
                   var(--bg);
       color:var(--text);
-      -webkit-font-smoothing:antialiased;
       display:flex;
       align-items:center;
       justify-content:center;
       padding:32px;
     }
-
     .card{
       width:100%;
       max-width:520px;
@@ -41,7 +43,6 @@
       backdrop-filter: blur(10px) saturate(120%);
       border: 1px solid rgba(255,255,255,0.04);
     }
-
     header{
       display:flex;
       gap:16px;
@@ -61,23 +62,9 @@
       color:var(--muted);
       border:1px solid rgba(255,255,255,0.03);
     }
-    h1{
-      margin:0;
-      font-size:20px;
-      letter-spacing:0.2px;
-    }
-    p.lead{
-      margin:4px 0 0 0;
-      font-size:13px;
-      color:var(--muted);
-    }
-
-    .links{
-      margin-top:18px;
-      display:grid;
-      gap:12px;
-    }
-
+    h1{margin:0;font-size:20px;}
+    p.lead{margin:4px 0 0;font-size:13px;color:var(--muted);}
+    .links{margin-top:18px;display:grid;gap:12px;}
     .link-btn{
       display:flex;
       gap:12px;
@@ -88,92 +75,39 @@
       background: linear-gradient(180deg, var(--glass), var(--glass-2));
       border:1px solid rgba(255,255,255,0.03);
       box-shadow: 0 6px 18px rgba(2,6,23,0.45);
-      transition: transform .12s ease, box-shadow .12s ease;
       color:var(--text);
+      transition:transform .12s ease, box-shadow .12s ease;
     }
-    .link-btn:hover{ transform: translateY(-4px); box-shadow: 0 14px 40px rgba(2,6,23,0.55); }
+    .link-btn:hover{transform:translateY(-4px);box-shadow:0 14px 40px rgba(2,6,23,0.55);}
     .link-icon{
       min-width:44px;
       min-height:44px;
       display:grid;
       place-items:center;
       border-radius:10px;
-      background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      font-weight:700;
+      background:linear-gradient(135deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
       color:var(--muted);
       border:1px solid rgba(255,255,255,0.02);
+      font-size:20px;
     }
-    .link-meta{
-      flex:1;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-    }
-    .link-title{ font-size:15px; margin:0; }
-    .link-sub{ font-size:12px; color:var(--muted); margin:0; }
-    footer{ margin-top:18px; display:flex; justify-content:space-between; align-items:center; gap:12px; color:var(--muted); font-size:13px; }
-
-    @media (max-width:420px){
-      .card{ padding:18px; }
-      .avatar{ width:54px; height:54px; font-size:18px; }
-    }
+    .link-meta{flex:1;display:flex;justify-content:space-between;align-items:center;gap:12px;}
+    .link-title{font-size:15px;margin:0;}
+    .link-sub{font-size:12px;color:var(--muted);margin:0;}
+    footer{margin-top:18px;display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px;}
   </style>
 </head>
 <body>
-  <main class="card" role="main" aria-labelledby="judul">
+  <main class="card" role="main">
     <header>
-      <div class="avatar" aria-hidden="true">KM</div>
+      <div class="avatar">KM</div>
       <div>
-        <h1 id="judul">Pusat Link — KuningMinum</h1>
-        <p class="lead">Satu tempat untuk semua tautan penting. Klik untuk membuka di tab baru.</p>
+        <h1>Pusat Link — KuningMinum</h1>
+        <p class="lead">Satu tempat untuk semua tautan penting.</p>
       </div>
     </header>
 
-    <section class="links" aria-label="Daftar tautan">
-      <a class="link-btn" href="https://kuningminum.github.io/kuningminum/" target="_blank" rel="noopener noreferrer">
-        <div class="link-icon" aria-hidden="true">GH</div>
-        <div class="link-meta">
-          <div>
-            <p class="link-title">Halaman GitHub Pages</p>
-            <p class="link-sub">kuningminum.github.io</p>
-          </div>
-          <div aria-hidden="true">↗</div>
-        </div>
-      </a>
-
-      <a class="link-btn" href="https://saweria.co/KuningMinum" target="_blank" rel="noopener noreferrer">
-        <div class="link-icon" aria-hidden="true">$</div>
-        <div class="link-meta">
-          <div>
-            <p class="link-title">Donasi / Saweria</p>
-            <p class="link-sub">saweria.co/KuningMinum</p>
-          </div>
-          <div aria-hidden="true">↗</div>
-        </div>
-      </a>
-
-      <a class="link-btn" href="https://ahmadrijaniofficial.blogspot.com/" target="_blank" rel="noopener noreferrer">
-        <div class="link-icon" aria-hidden="true">B</div>
-        <div class="link-meta">
-          <div>
-            <p class="link-title">Blog Ahmad Rijani</p>
-            <p class="link-sub">ahmadrijaniofficial.blogspot.com</p>
-          </div>
-          <div aria-hidden="true">↗</div>
-        </div>
-      </a>
-
-      <a class="link-btn" href="https://youtube.com/@ahmadrijaniofficial?si=806boP2yOf5pcYI4" target="_blank" rel="noopener noreferrer">
-        <div class="link-icon" aria-hidden="true">YT</div>
-        <div class="link-meta">
-          <div>
-            <p class="link-title">YouTube — Ahmad Rijani Official</p>
-            <p class="link-sub">youtube.com/@ahmadrijaniofficial</p>
-          </div>
-          <div aria-hidden="true">↗</div>
-        </div>
-      </a>
+    <section class="links" id="link-container" aria-label="Daftar tautan">
+      <!-- Link dimuat otomatis dari JSON -->
     </section>
 
     <footer>
@@ -181,5 +115,33 @@
       <div>Terakhir diperbarui: <time datetime="2025-10-16">16 Oktober 2025</time></div>
     </footer>
   </main>
+
+  <script>
+    // Ambil data dari JSON eksternal
+    fetch("links.json")
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById("link-container");
+        data.links.forEach(link => {
+          const el = document.createElement("a");
+          el.className = "link-btn";
+          el.href = link.url;
+          el.target = "_blank";
+          el.rel = "noopener noreferrer";
+          el.innerHTML = `
+            <div class="link-icon"><i class="${link.icon}"></i></div>
+            <div class="link-meta">
+              <div>
+                <p class="link-title">${link.title}</p>
+                <p class="link-sub">${link.subtitle}</p>
+              </div>
+              <div>↗</div>
+            </div>
+          `;
+          container.appendChild(el);
+        });
+      })
+      .catch(err => console.error("Gagal memuat JSON:", err));
+  </script>
 </body>
 </html>
