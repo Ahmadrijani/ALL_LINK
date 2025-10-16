@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pusat Link</title>
+  <title>all Link</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     body {
@@ -11,20 +11,20 @@
     }
     .links-container { width:100%; max-width:600px; display:grid; gap:12px; }
     .link-btn{
-      display:flex; gap:12px; align-items:center; text-decoration:none;
+      display:flex; gap:12px; align-items:flex-start; text-decoration:none;
       padding:10px; border-radius:12px; background:rgba(255,255,255,0.06);
       color:#e6eef8; transition:.12s; box-shadow:0 6px 18px rgba(2,6,23,0.45);
       flex-wrap:wrap;
     }
     .link-btn:hover{ transform:translateY(-2px); box-shadow:0 8px 20px rgba(2,6,23,0.55); }
     .link-icon{ width:12%; min-width:40px; aspect-ratio:1/1; display:grid; place-items:center; font-size:1.2rem; color:#b7c1d6; background:rgba(255,255,255,0.02); border-radius:10px; }
-    .link-meta{ flex:1 1 auto; display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; min-width:0; }
+    .link-meta{ flex:1 1 auto; display:flex; flex-direction:column; gap:4px; min-width:0; }
     .link-title{ margin:0; font-size:1rem; word-break:break-word; }
-    .link-sub{ margin:0; font-size:0.8rem; color:#b7c1d6; word-break:break-word; display:none; } /* subtitle disembunyikan */
+    .link-desc{ margin:0; font-size:0.85rem; color:#b7c1d6; word-break:break-word; } 
     @media(max-width:480px){
       .link-icon{min-width:36px; font-size:1rem;} 
       .link-title{font-size:0.9rem;} 
-      .link-sub{font-size:0.7rem;} 
+      .link-desc{font-size:0.75rem;} 
       .link-btn{padding:8px;}
     }
   </style>
@@ -45,11 +45,8 @@
           el.innerHTML = `
             <div class="link-icon"><i class="${link.icon}"></i></div>
             <div class="link-meta">
-              <div>
-                <p class="link-title">${link.title}</p>
-                <p class="link-sub">${link.subtitle || ""}</p>
-              </div>
-              <div>↗</div>
+              <p class="link-title">${link.title}</p>
+              <p class="link-desc">${link.description || ""}</p>
             </div>
           `;
           container.appendChild(el);
