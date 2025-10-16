@@ -2,11 +2,10 @@
 <html lang="id">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Pusat Link — KuningMinum</title>
-  <meta name="description" content="Satu tempat untuk semua tautan penting." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Pusat Link</title>
 
-  <!-- Font Awesome CDN -->
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <style>
@@ -14,77 +13,84 @@
       --bg:#0f1724;
       --glass: rgba(255,255,255,0.06);
       --glass-2: rgba(255,255,255,0.04);
-      --accent: rgba(130, 95, 255, 0.9);
       --text:#e6eef8;
       --muted: #b7c1d6;
-      --radius:16px;
-      --shadow: 0 8px 30px rgba(2,6,23,0.6);
+      --radius:12px;
+      --shadow: 0 6px 18px rgba(2,6,23,0.45);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     }
-    html,body{height:100%}
-    body{
+    html, body {
       margin:0;
-      background: radial-gradient(1200px 600px at 10% 20%, rgba(60,40,120,0.28), transparent 6%),
-                  radial-gradient(1000px 400px at 90% 80%, rgba(10,150,220,0.06), transparent 6%),
-                  var(--bg);
-      color:var(--text);
+      padding:0;
+      height:100%;
+      background: var(--bg);
+      color: var(--text);
       display:flex;
-      align-items:center;
       justify-content:center;
-      padding:32px;
+      align-items:center;
     }
-    .card{
-      width:100%;
-      max-width:520px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-radius:var(--radius);
-      padding:28px;
-      box-shadow:var(--shadow);
-      backdrop-filter: blur(10px) saturate(120%);
-      border: 1px solid rgba(255,255,255,0.04);
+    .links-container {
+      width:90%;
+      max-width:500px;
+      display:grid;
+      gap:12px;
+      padding:16px;
+      box-sizing:border-box;
     }
-    .links{display:grid;gap:12px;}
     .link-btn{
       display:flex;
       gap:12px;
       align-items:center;
       text-decoration:none;
       padding:12px 14px;
-      border-radius:12px;
+      border-radius:var(--radius);
       background: linear-gradient(180deg, var(--glass), var(--glass-2));
-      border:1px solid rgba(255,255,255,0.03);
-      box-shadow: 0 6px 18px rgba(2,6,23,0.45);
       color:var(--text);
-      transition:transform .12s ease, box-shadow .12s ease;
+      transition: transform .12s ease, box-shadow .12s ease;
+      box-shadow: var(--shadow);
     }
-    .link-btn:hover{transform:translateY(-4px);box-shadow:0 14px 40px rgba(2,6,23,0.55);}
+    .link-btn:hover{
+      transform: translateY(-3px);
+      box-shadow: 0 10px 28px rgba(2,6,23,0.55);
+    }
     .link-icon{
       min-width:44px;
       min-height:44px;
       display:grid;
       place-items:center;
       border-radius:10px;
-      background:linear-gradient(135deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
-      color:var(--muted);
-      border:1px solid rgba(255,255,255,0.02);
+      background: rgba(255,255,255,0.02);
+      color: var(--muted);
       font-size:20px;
     }
-    .link-meta{flex:1;display:flex;justify-content:space-between;align-items:center;gap:12px;}
-    .link-title{font-size:15px;margin:0;}
-    .link-sub{font-size:12px;color:var(--muted);margin:0;}
-    footer{margin-top:18px;display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px;}
+    .link-meta{
+      flex:1;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+    .link-title{
+      font-size:15px;
+      margin:0;
+    }
+    .link-sub{
+      font-size:12px;
+      color: var(--muted);
+      margin:0;
+    }
+
+    /* Responsive untuk Android dan mobile */
+    @media(max-width: 480px){
+      .link-title{font-size:14px;}
+      .link-sub{font-size:11px;}
+      .link-icon{min-width:40px; min-height:40px; font-size:18px;}
+    }
   </style>
 </head>
 <body>
-  <main class="card" role="main">
-    <section class="links" id="link-container" aria-label="Daftar tautan">
-      <!-- Link dimuat otomatis dari JSON -->
-    </section>
-
-    <footer>
-      <div>© KuningMinum</div>
-      <div>Terakhir diperbarui: <time datetime="2025-10-16">16 Oktober 2025</time></div>
-    </footer>
+  <main class="links-container" id="link-container">
+    <!-- Link akan dimuat dari JSON -->
   </main>
 
   <script>
