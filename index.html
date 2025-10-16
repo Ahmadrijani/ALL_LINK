@@ -4,10 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Pusat Link — KuningMinum</title>
-  <meta name="description" content="Pusat link resmi: GitHub Pages, Saweria, Blogspot, dan YouTube." />
+  <meta name="description" content="Satu tempat untuk semua tautan penting." />
 
   <!-- Font Awesome CDN -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-ncB6xkOvsWZ9n3YxW+WzLgNnEtgRHczr52E9PKKmJXkKRJ09D4HzPnD77Rk3nGPTe/8YjKmfvABYIQE9T5x7qw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <style>
     :root{
@@ -43,28 +43,7 @@
       backdrop-filter: blur(10px) saturate(120%);
       border: 1px solid rgba(255,255,255,0.04);
     }
-    header{
-      display:flex;
-      gap:16px;
-      align-items:center;
-      margin-bottom:18px;
-    }
-    .avatar{
-      width:64px;
-      height:64px;
-      border-radius:12px;
-      background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight:700;
-      font-size:20px;
-      color:var(--muted);
-      border:1px solid rgba(255,255,255,0.03);
-    }
-    h1{margin:0;font-size:20px;}
-    p.lead{margin:4px 0 0;font-size:13px;color:var(--muted);}
-    .links{margin-top:18px;display:grid;gap:12px;}
+    .links{display:grid;gap:12px;}
     .link-btn{
       display:flex;
       gap:12px;
@@ -98,14 +77,6 @@
 </head>
 <body>
   <main class="card" role="main">
-    <header>
-      <div class="avatar">KM</div>
-      <div>
-        <h1>Pusat Link — KuningMinum</h1>
-        <p class="lead">Satu tempat untuk semua tautan penting.</p>
-      </div>
-    </header>
-
     <section class="links" id="link-container" aria-label="Daftar tautan">
       <!-- Link dimuat otomatis dari JSON -->
     </section>
@@ -117,7 +88,6 @@
   </main>
 
   <script>
-    // Ambil data dari JSON eksternal
     fetch("links.json")
       .then(res => res.json())
       .then(data => {
