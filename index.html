@@ -21,7 +21,6 @@
     .link-meta{ flex:1 1 auto; display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; min-width:0; }
     .link-title{ margin:0; font-size:1rem; word-break:break-word; }
     .link-sub{ margin:0; font-size:0.8rem; color:#b7c1d6; word-break:break-word; display:none; } /* subtitle disembunyikan */
-    .locked { pointer-events:none; opacity:0.5; }
     @media(max-width:480px){
       .link-icon{min-width:36px; font-size:1rem;} 
       .link-title{font-size:0.9rem;} 
@@ -38,10 +37,9 @@
       .then(data => {
         const container = document.getElementById("link-container");
         data.links.forEach(link => {
-          if(link.hide) return; // kalau hide true, skip
           const el = document.createElement("a");
-          el.className = "link-btn" + (link.lock ? " locked" : "");
-          el.href = link.lock ? "javascript:void(0)" : link.url;
+          el.className = "link-btn";
+          el.href = link.url;
           el.target = "_blank";
           el.rel = "noopener noreferrer";
           el.innerHTML = `
