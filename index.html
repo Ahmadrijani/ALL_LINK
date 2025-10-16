@@ -2,8 +2,8 @@
 <html lang="id">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Pusat Link</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ALL LINK</title>
 
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -22,19 +22,21 @@
     html, body {
       margin:0;
       padding:0;
-      height:100%;
+      min-height:100%;
       background: var(--bg);
       color: var(--text);
       display:flex;
       justify-content:center;
-      align-items:center;
+      align-items:flex-start;
+      padding:10px;
+      box-sizing:border-box;
     }
     .links-container {
-      width:90%;
-      max-width:500px;
+      width:100%;
+      max-width:600px;
       display:grid;
       gap:12px;
-      padding:16px;
+      padding:0;
       box-sizing:border-box;
     }
     .link-btn{
@@ -42,55 +44,65 @@
       gap:12px;
       align-items:center;
       text-decoration:none;
-      padding:12px 14px;
+      padding:10px;
       border-radius:var(--radius);
       background: linear-gradient(180deg, var(--glass), var(--glass-2));
       color:var(--text);
       transition: transform .12s ease, box-shadow .12s ease;
       box-shadow: var(--shadow);
+      flex-wrap:wrap;
     }
     .link-btn:hover{
-      transform: translateY(-3px);
-      box-shadow: 0 10px 28px rgba(2,6,23,0.55);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(2,6,23,0.55);
     }
     .link-icon{
-      min-width:44px;
-      min-height:44px;
+      width:12%;
+      min-width:40px;
+      aspect-ratio:1/1;
       display:grid;
       place-items:center;
       border-radius:10px;
       background: rgba(255,255,255,0.02);
       color: var(--muted);
-      font-size:20px;
+      font-size:1.2rem;
     }
     .link-meta{
-      flex:1;
+      flex:1 1 auto;
       display:flex;
       justify-content:space-between;
       align-items:center;
-      gap:12px;
+      gap:8px;
+      min-width:0;
+      flex-wrap:wrap;
     }
     .link-title{
-      font-size:15px;
+      font-size:1rem;
       margin:0;
+      word-break: break-word;
     }
     .link-sub{
-      font-size:12px;
+      font-size:0.8rem;
       color: var(--muted);
       margin:0;
+      word-break: break-word;
     }
 
-    /* Responsive untuk Android dan mobile */
+    /* Responsive mobile kecil */
     @media(max-width: 480px){
-      .link-title{font-size:14px;}
-      .link-sub{font-size:11px;}
-      .link-icon{min-width:40px; min-height:40px; font-size:18px;}
+      .link-icon{
+        min-width:36px;
+        font-size:1rem;
+      }
+      .link-title{font-size:0.9rem;}
+      .link-sub{font-size:0.7rem;}
+      .link-btn{padding:8px;}
     }
   </style>
 </head>
 <body>
   <main class="links-container" id="link-container">
-    <!-- Link akan dimuat dari JSON -->
+    <!-- Link dari JSON -->
   </main>
 
   <script>
