@@ -45,8 +45,8 @@
       "subtitle": "Tidak Ditampilkan",
       "url": "https://contoh.com",
       "icon": "fas fa-eye-slash",
-      "lock": false,
-      "hide": true
+      "lock": true,
+      "hide": false
     }
   ]
 }
