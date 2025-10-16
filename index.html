@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>all Link</title>
+  <title>Link</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     body {
@@ -12,20 +12,20 @@
     .links-container { width:100%; max-width:600px; display:grid; gap:12px; }
     .link-btn{
       display:flex; gap:12px; align-items:flex-start; text-decoration:none;
-      padding:10px; border-radius:12px; background:rgba(255,255,255,0.06);
+      padding:12px; border-radius:12px; background:rgba(255,255,255,0.06);
       color:#e6eef8; transition:.12s; box-shadow:0 6px 18px rgba(2,6,23,0.45);
       flex-wrap:wrap;
     }
     .link-btn:hover{ transform:translateY(-2px); box-shadow:0 8px 20px rgba(2,6,23,0.55); }
-    .link-icon{ width:12%; min-width:40px; aspect-ratio:1/1; display:grid; place-items:center; font-size:1.2rem; color:#b7c1d6; background:rgba(255,255,255,0.02); border-radius:10px; }
+    .link-icon{ width:12%; min-width:40px; aspect-ratio:1/1; display:grid; place-items:center; font-size:1.3rem; color:#b7c1d6; background:rgba(255,255,255,0.02); border-radius:10px; }
     .link-meta{ flex:1 1 auto; display:flex; flex-direction:column; gap:4px; min-width:0; }
-    .link-title{ margin:0; font-size:1rem; word-break:break-word; }
+    .link-title{ margin:0; font-size:1rem; font-weight:600; word-break:break-word; }
     .link-desc{ margin:0; font-size:0.85rem; color:#b7c1d6; word-break:break-word; } 
     @media(max-width:480px){
-      .link-icon{min-width:36px; font-size:1rem;} 
-      .link-title{font-size:0.9rem;} 
+      .link-icon{min-width:36px; font-size:1.1rem;} 
+      .link-title{font-size:0.95rem;} 
       .link-desc{font-size:0.75rem;} 
-      .link-btn{padding:8px;}
+      .link-btn{padding:10px;}
     }
   </style>
 </head>
