@@ -3,42 +3,50 @@
     {
       "title": "YouTube KuningMinumOfficial",
       "url": "https://www.youtube.com/@KuningMinumOfficial",
-      "icon": "fab fa-youtube"
+      "icon": "fab fa-youtube",
+      "grup": "YouTube"
     },
     {
       "title": "YouTube AhmadRijaniOfficial",
       "url": "https://www.youtube.com/@AhmadRijaniOfficial",
-      "icon": "fab fa-youtube"
+      "icon": "fab fa-youtube",
+      "grup": "YouTube"
     },
     {
       "title": "YouTube JasonGameDev",
       "url": "https://www.youtube.com/@JasonGameDev",
-      "icon": "fab fa-youtube"
+      "icon": "fab fa-youtube",
+      "grup": "YouTube"
     },
     {
       "title": "YouTube Ero4Studio",
       "url": "https://www.youtube.com/@Ero4.Studio",
-      "icon": "fab fa-youtube"
+      "icon": "fab fa-youtube",
+      "grup": "YouTube"
     },
     {
       "title": "YouTube Ero4Entertainment",
       "url": "https://www.youtube.com/@Ero4Entertainment",
-      "icon": "fab fa-youtube"
+      "icon": "fab fa-youtube",
+      "grup": "YouTube"
     },
     {
       "title": "Saweria",
       "url": "https://saweria.co/KuningMinum",
-      "icon": "fas fa-hand-holding-heart"
-    },
-    {
-      "title": "Blogspot AhmadRijaniOfficial",
-      "url": "https://ahmadrijaniofficial.blogspot.com/",
-      "icon": "fas fa-blog"
+      "icon": "fas fa-hand-holding-heart",
+      "grup": "Donasi"
     },
     {
       "title": "GitHub Kuning Minum",
       "url": "https://kuningminum.github.io/kuningminum/",
-      "icon": "fab fa-github"
+      "icon": "fab fa-github",
+      "grup": "Proyek"
+    },
+    {
+      "title": "Blog AhmadRijaniOfficial",
+      "url": "https://ahmadrijaniofficial.blogspot.com/",
+      "icon": "fas fa-blog",
+      "grup": ""
     }
   ]
 }
