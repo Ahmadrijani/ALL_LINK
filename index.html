@@ -23,11 +23,12 @@ body {
 .link-btn { display:flex; justify-content:space-between; align-items:center; padding:12px; border-radius:12px; background:rgba(255,255,255,0.06); color:#e6eef8; box-shadow:0 6px 18px rgba(2,6,23,0.45); transition:.12s; cursor:pointer;}
 .link-btn:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(2,6,23,0.55);}
 .link-info { display:flex; gap:12px; align-items:center; }
-.link-icon { width:12%; min-width:40px; aspect-ratio:1/1; display:grid; place-items:center; font-size:1.3rem; color:#b7c1d6; background:rgba(255,255,255,0.02); border-radius:10px; }
+.link-icon { width:12%; min-width:40px; aspect-ratio:1/1; display:grid; place-items:center; font-size:1.3rem; color:#b7c1d6; background:rgba(255,255,255,0.02); border-radius:10px; object-fit:cover; }
 .link-title { margin:0; font-weight:600; word-break:break-word; flex:1; }
 .link-buttons { display:flex; gap:6px; }
 .btn-icon { background:none; border:none; color:#b7c1d6; cursor:pointer; font-size:1.2rem; transition:.15s; }
 .btn-icon:hover { color:#fff; transform:scale(1.2); }
+.favorite { color:#ffd700 !important; }
 /* Popup */
 .preview-popup { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(4px); justify-content:center; align-items:center; z-index:999; }
 .preview-content { width:90%; max-width:800px; height:75%; background:#111; border-radius:12px; box-shadow:0 0 25px rgba(0,0,0,0.5); overflow:hidden; position:relative; display:flex; flex-direction:column; }
@@ -35,7 +36,6 @@ body {
 .preview-iframe { flex:1; width:100%; border:none; }
 .minimized { height:50px !important; }
 .highlight { border:2px solid #4d90fe; }
-.favorite { color:#ffd700 !important; }
 @media(max-width:800px){ .grid-view .group-container { grid-template-columns:1fr !important; } }
 </style>
 </head>
@@ -53,7 +53,6 @@ body {
 
 <div class="container" id="link-container"></div>
 
-<!-- Popup -->
 <div class="preview-popup" id="preview-popup">
   <div class="preview-content" id="preview-content">
     <div class="preview-header">
@@ -81,18 +80,24 @@ const searchBox=document.getElementById("search-box");
 const btnGrid=document.getElementById("btn-grid");
 const btnList=document.getElementById("btn-list");
 
-// LocalStorage
 let viewMode = localStorage.getItem("viewMode") || "list";
 let favoriteLinks = JSON.parse(localStorage.getItem("favoriteLinks") || "[]");
 
 function renderLinks(links, highlightGroup=null, searchVal=""){
   container.innerHTML="";
   let groups={};
+
   links.forEach(link=>{
     const g=link.grup?.trim()||"Tanpa Grup";
     if(!groups[g]) groups[g]=[];
     groups[g].push(link);
   });
+
+  if(favoriteLinks.length>0){
+    groups["Favorit"] = favoriteLinks.map(fav=>{
+      return fav;
+    });
+  }
 
   const isGrid = (viewMode==="grid");
   container.classList.toggle("grid-view", isGrid);
@@ -101,11 +106,6 @@ function renderLinks(links, highlightGroup=null, searchVal=""){
   Object.keys(groups).forEach(group=>{
     if(highlightGroup && group!==highlightGroup) return;
 
-    // Pisahkan favorit
-    let favItems = groups[group].filter(l=>favoriteLinks.includes(l.url));
-    let normalItems = groups[group].filter(l=>!favoriteLinks.includes(l.url));
-    let finalItems = [...favItems,...normalItems];
-
     const groupContainer = document.createElement("div");
     groupContainer.className="group-container";
     const h=document.createElement("h2");
@@ -113,18 +113,23 @@ function renderLinks(links, highlightGroup=null, searchVal=""){
     h.textContent=group;
     groupContainer.appendChild(h);
 
-    finalItems.forEach(link=>{
+    groups[group].forEach(link=>{
       const item=document.createElement("div");
       item.className="link-btn";
       const info=document.createElement("div");
       info.className="link-info";
-      info.innerHTML=`<div class="link-icon"><i class="${link.icon}"></i></div>
-      <p class="link-title">${link.title}</p>`;
+
+      if(link.img){
+        info.innerHTML=`<div class="link-icon"><img src="${link.img}" alt="icon"></div>
+        <p class="link-title">${link.title}</p>`;
+      } else {
+        info.innerHTML=`<div class="link-icon"><i class="${link.icon}"></i></div>
+        <p class="link-title">${link.title}</p>`;
+      }
 
       const buttons=document.createElement("div");
       buttons.className="link-buttons";
 
-      // Tombol mata preview
       const eyeBtn=document.createElement("button");
       eyeBtn.className="btn-icon";
       eyeBtn.innerHTML='<i class="fa-solid fa-eye"></i>';
@@ -132,7 +137,6 @@ function renderLinks(links, highlightGroup=null, searchVal=""){
       eyeBtn.addEventListener("click", e=>{ e.stopPropagation(); openPopup(link.url); });
       buttons.appendChild(eyeBtn);
 
-      // Tombol buka link
       const openBtn=document.createElement("button");
       openBtn.className="btn-icon";
       openBtn.innerHTML='<i class="fa-solid fa-arrow-up-right-from-square"></i>';
@@ -140,19 +144,21 @@ function renderLinks(links, highlightGroup=null, searchVal=""){
       openBtn.addEventListener("click", e=>{ e.stopPropagation(); window.open(link.url,"_blank"); });
       buttons.appendChild(openBtn);
 
-      // Tombol favorit
       const favBtn=document.createElement("button");
       favBtn.className="btn-icon";
       favBtn.innerHTML='<i class="fa-solid fa-star"></i>';
       favBtn.title="Favorit";
-      if(favoriteLinks.includes(link.url)) favBtn.classList.add("favorite");
+      if(favoriteLinks.some(f=>f.url===link.url)) favBtn.classList.add("favorite");
       favBtn.addEventListener("click", e=>{
         e.stopPropagation();
-        if(favoriteLinks.includes(link.url)){
-          favoriteLinks = favoriteLinks.filter(u=>u!==link.url);
-          favBtn.classList.remove("favorite");
+        const exists = favoriteLinks.find(f=>f.url===link.url);
+        if(exists){
+          if(confirm("Hapus dari favorit?")){
+            favoriteLinks=favoriteLinks.filter(f=>f.url!==link.url);
+            favBtn.classList.remove("favorite");
+          }
         } else {
-          favoriteLinks.push(link.url);
+          favoriteLinks.push({...link});
           favBtn.classList.add("favorite");
         }
         localStorage.setItem("favoriteLinks",JSON.stringify(favoriteLinks));
@@ -163,11 +169,8 @@ function renderLinks(links, highlightGroup=null, searchVal=""){
       item.appendChild(info);
       item.appendChild(buttons);
       groupContainer.appendChild(item);
-
-      // Klik container buka tab baru
       item.addEventListener("click", ()=> window.open(link.url,"_blank"));
 
-      // Highlight filter / search
       if((highlightGroup && (link.grup||"Tanpa Grup")===highlightGroup) || (searchVal && link.title.toLowerCase().includes(searchVal.toLowerCase()))){
         item.classList.add("highlight");
       }
@@ -189,14 +192,12 @@ btnClose.onclick=()=> { popup.style.display="none"; frame.src=""; }
 
 filterGroup.addEventListener("change",()=>{
   const val=filterGroup.value;
-  const searchVal=searchBox.value.toLowerCase();
-  renderLinks(linksData,val,searchVal);
+  renderLinks(linksData,val,searchBox.value.toLowerCase());
 });
 
 searchBox.addEventListener("input",()=>{
-  const searchVal=searchBox.value.toLowerCase();
-  const grpVal=filterGroup.value;
-  renderLinks(linksData,grpVal,searchVal);
+  const val=searchBox.value.toLowerCase();
+  renderLinks(linksData,filterGroup.value,val);
 });
 
 btnGrid.addEventListener("click",()=>{
@@ -210,13 +211,11 @@ btnList.addEventListener("click",()=>{
   renderLinks(linksData,filterGroup.value,searchBox.value.toLowerCase());
 });
 
-// Load JSON
 fetch("links.json")
 .then(r=>r.json())
 .then(d=>{
   linksData=d.links;
   renderLinks(linksData);
-  // Populate filter dropdown
   let groups=[...new Set(linksData.map(l=>l.grup?.trim()||"Tanpa Grup"))];
   filterGroup.innerHTML='<option value="">Semua Grup</option>'+groups.map(g=>`<option value="${g}">${g}</option>`).join('');
 })
