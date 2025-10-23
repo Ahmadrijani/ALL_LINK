@@ -94,9 +94,7 @@ function renderLinks(links, highlightGroup=null, searchVal=""){
   });
 
   if(favoriteLinks.length>0){
-    groups["Favorit"] = favoriteLinks.map(fav=>{
-      return fav;
-    });
+    groups["Favorit"] = favoriteLinks.map(fav=>fav);
   }
 
   const isGrid = (viewMode==="grid");
@@ -221,5 +219,6 @@ fetch("links.json")
 })
 .catch(err=>{ console.warn("Gagal load JSON",err); container.innerHTML="<p style='color:#fff'>Gagal memuat data</p>"; });
 </script>
+
 </body>
 </html>
