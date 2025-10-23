@@ -3,50 +3,153 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pusat Link</title>
+  <title>Pusat Link Pratinjau</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     body {
-      margin:0; padding:10px; background:#0f1724; font-family:Inter,sans-serif; display:flex; justify-content:center;
+      margin:0; padding:10px; background:#0f1724; font-family:Inter,sans-serif;
+      display:flex; flex-direction:column; align-items:center;
     }
     .links-container { width:100%; max-width:600px; display:grid; gap:12px; }
-    .link-btn{
-      display:flex; gap:12px; align-items:center; text-decoration:none;
-      padding:12px; border-radius:12px; background:rgba(255,255,255,0.06);
-      color:#e6eef8; transition:.12s; box-shadow:0 6px 18px rgba(2,6,23,0.45);
-      flex-wrap:wrap;
+    .link-btn {
+      display:flex; justify-content:space-between; align-items:center;
+      text-decoration:none; padding:12px; border-radius:12px;
+      background:rgba(255,255,255,0.06); color:#e6eef8;
+      transition:.12s; box-shadow:0 6px 18px rgba(2,6,23,0.45);
     }
     .link-btn:hover{ transform:translateY(-2px); box-shadow:0 8px 20px rgba(2,6,23,0.55); }
+    .link-info{ display:flex; align-items:center; gap:12px; }
     .link-icon{ width:12%; min-width:40px; aspect-ratio:1/1; display:grid; place-items:center; font-size:1.3rem; color:#b7c1d6; background:rgba(255,255,255,0.02); border-radius:10px; }
     .link-title{ margin:0; font-size:1rem; font-weight:600; word-break:break-word; }
+    .eye-btn{ background:none; border:none; color:#b7c1d6; cursor:pointer; font-size:1.3rem; transition:color .15s, transform .15s; }
+    .eye-btn:hover{ color:#ffffff; transform:scale(1.15); }
+    .group-title{ font-size:1.1rem; font-weight:700; color:#e6eef8; margin:20px 0 5px; }
+
+    /* Popup */
+    .preview-popup {
+      display:none; position:fixed; inset:0;
+      background:rgba(0,0,0,0.65); backdrop-filter:blur(4px);
+      justify-content:center; align-items:center; z-index:999;
+    }
+    .preview-content {
+      width:90%; max-width:800px; height:75%;
+      background:#1a2433; border-radius:12px;
+      box-shadow:0 0 25px rgba(0,0,0,0.5); overflow:hidden;
+      position:relative; animation:fadeIn .3s ease;
+    }
+    .preview-content iframe {
+      width:100%; height:100%; border:none;
+    }
+    .close-preview {
+      position:absolute; top:10px; right:10px;
+      background:none; border:none; color:#fff;
+      font-size:1.5rem; cursor:pointer;
+      transition:transform .15s;
+    }
+    .close-preview:hover{ transform:scale(1.15); color:#ff6b6b; }
+
+    .error-message {
+      color:#ff6b6b;
+      background:rgba(255,255,255,0.05);
+      padding:10px 15px;
+      border-radius:10px;
+      margin-top:15px;
+      font-size:0.95rem;
+      text-align:center;
+    }
+
+    @keyframes fadeIn { from{opacity:0; transform:scale(0.95);} to{opacity:1; transform:scale(1);} }
     @media(max-width:480px){
-      .link-icon{min-width:36px; font-size:1.1rem;} 
-      .link-title{font-size:0.95rem;} 
+      .link-icon{min-width:36px; font-size:1.1rem;}
+      .link-title{font-size:0.95rem;}
       .link-btn{padding:10px;}
     }
   </style>
 </head>
 <body>
   <main class="links-container" id="link-container"></main>
+
+  <!-- Popup Pratinjau -->
+  <div class="preview-popup" id="preview-popup">
+    <div class="preview-content">
+      <button class="close-preview" id="close-preview"><i class="fa-solid fa-eye-slash"></i></button>
+      <iframe id="preview-frame" title="Pratinjau"></iframe>
+    </div>
+  </div>
+
+  <!-- Pesan error -->
+  <div id="error-container"></div>
+
   <script>
-    fetch("links.json")
-      .then(res => res.json())
-      .then(data => {
-        const container = document.getElementById("link-container");
-        data.links.forEach(link => {
-          const el = document.createElement("a");
-          el.className = "link-btn";
-          el.href = link.url;
-          el.target = "_blank";
-          el.rel = "noopener noreferrer";
-          el.innerHTML = `
+    const container = document.getElementById("link-container");
+    const popup = document.getElementById("preview-popup");
+    const frame = document.getElementById("preview-frame");
+    const closeBtn = document.getElementById("close-preview");
+    const errorContainer = document.getElementById("error-container");
+
+    function renderLinks(links) {
+      const grouped = {};
+      links.forEach(link => {
+        const g = link.grup?.trim() || "Tanpa Grup";
+        if (!grouped[g]) grouped[g] = [];
+        grouped[g].push(link);
+      });
+
+      Object.keys(grouped).forEach(grup => {
+        if (grup !== "Tanpa Grup") {
+          const groupTitle = document.createElement("h2");
+          groupTitle.className = "group-title";
+          groupTitle.textContent = grup;
+          container.appendChild(groupTitle);
+        }
+
+        grouped[grup].forEach(link => {
+          const item = document.createElement("div");
+          item.className = "link-btn";
+
+          const info = document.createElement("div");
+          info.className = "link-info";
+          info.innerHTML = `
             <div class="link-icon"><i class="${link.icon}"></i></div>
             <p class="link-title">${link.title}</p>
           `;
-          container.appendChild(el);
+
+          const eyeBtn = document.createElement("button");
+          eyeBtn.className = "eye-btn";
+          eyeBtn.innerHTML = '<i class="fa-solid fa-eye"></i>';
+          eyeBtn.addEventListener("click", () => {
+            frame.src = link.url;
+            popup.style.display = "flex";
+          });
+
+          item.appendChild(info);
+          item.appendChild(eyeBtn);
+          container.appendChild(item);
         });
+      });
+    }
+
+    closeBtn.addEventListener("click", () => {
+      popup.style.display = "none";
+      frame.src = "";
+    });
+
+    // Ambil data dari links.json
+    fetch("links.json")
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+        return res.json();
       })
-      .catch(err => console.error("Gagal memuat JSON:", err));
+      .then(d => renderLinks(d.links))
+      .catch(err => {
+        console.error("Gagal load JSON:", err);
+        errorContainer.innerHTML = `
+          <div class="error-message">
+            <strong>Kesalahan saat memuat data:</strong> ${err.message} <br>
+            Pastikan file <code>links.json</code> ada, format JSON benar, dan server mendukung akses.
+          </div>
+        `;
+      });
   </script>
 </body>
 </html>
