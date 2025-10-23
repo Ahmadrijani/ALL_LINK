@@ -16,8 +16,9 @@ body {
 .controls button { display:flex; align-items:center; justify-content:center; }
 .controls button i { margin-right:4px; }
 
-.container { display:grid; gap:12px; padding:10px; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
-.list-view { grid-template-columns:1fr !important; }
+.container { display:grid; gap:12px; padding:10px; }
+.grid-view .group-container { display:grid; gap:12px; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+.list-view .group-container { display:flex; flex-direction:column; gap:6px; }
 .group-title { font-size:1.5rem; font-weight:700; margin:20px 0 5px; border-bottom:1px solid #3a3f5a; padding-bottom:4px; }
 .link-btn { display:flex; justify-content:space-between; align-items:center; padding:12px; border-radius:12px; background:rgba(255,255,255,0.06); color:#e6eef8; box-shadow:0 6px 18px rgba(2,6,23,0.45); transition:.12s; cursor:pointer;}
 .link-btn:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(2,6,23,0.55);}
@@ -34,7 +35,7 @@ body {
 .preview-iframe { flex:1; width:100%; border:none; }
 .minimized { height:50px !important; }
 .highlight { border:2px solid #4d90fe; }
-@media(max-width:800px){ .container { grid-template-columns:1fr !important; } }
+@media(max-width:800px){ .grid-view .group-container { grid-template-columns:1fr !important; } }
 </style>
 </head>
 <body>
@@ -79,6 +80,9 @@ const searchBox=document.getElementById("search-box");
 const btnGrid=document.getElementById("btn-grid");
 const btnList=document.getElementById("btn-list");
 
+// Cek localStorage untuk mode
+let viewMode = localStorage.getItem("viewMode") || "list";
+
 function renderLinks(links, highlightGroup=null, searchVal=""){
   container.innerHTML="";
   let groups={};
@@ -88,14 +92,19 @@ function renderLinks(links, highlightGroup=null, searchVal=""){
     groups[g].push(link);
   });
 
+  const isGrid = (viewMode==="grid");
+  container.classList.toggle("grid-view", isGrid);
+  container.classList.toggle("list-view", !isGrid);
+
   Object.keys(groups).forEach(group=>{
-    if(highlightGroup && group!==highlightGroup) return; // sembunyikan item lain
-    if(group!=="Tanpa Grup"){
-      const h=document.createElement("h2");
-      h.className="group-title";
-      h.textContent=group;
-      container.appendChild(h);
-    }
+    if(highlightGroup && group!==highlightGroup) return;
+    const groupContainer = document.createElement("div");
+    groupContainer.className="group-container";
+    const h=document.createElement("h2");
+    h.className="group-title";
+    h.textContent=group;
+    groupContainer.appendChild(h);
+
     groups[group].forEach(link=>{
       const item=document.createElement("div");
       item.className="link-btn";
@@ -103,6 +112,7 @@ function renderLinks(links, highlightGroup=null, searchVal=""){
       info.className="link-info";
       info.innerHTML=`<div class="link-icon"><i class="${link.icon}"></i></div>
       <p class="link-title">${link.title}</p>`;
+
       const buttons=document.createElement("div");
       buttons.className="link-buttons";
 
@@ -124,7 +134,7 @@ function renderLinks(links, highlightGroup=null, searchVal=""){
 
       item.appendChild(info);
       item.appendChild(buttons);
-      container.appendChild(item);
+      groupContainer.appendChild(item);
 
       // Klik container buka tab baru
       item.addEventListener("click", ()=> window.open(link.url,"_blank"));
@@ -134,6 +144,7 @@ function renderLinks(links, highlightGroup=null, searchVal=""){
         item.classList.add("highlight");
       }
     });
+    container.appendChild(groupContainer);
   });
 }
 
@@ -150,18 +161,22 @@ btnClose.onclick=()=> { popup.style.display="none"; frame.src=""; }
 
 filterGroup.addEventListener("change",()=>{
   const val=filterGroup.value;
-  const searchVal=searchBox.value;
+  const searchVal=searchBox.value.toLowerCase();
   renderLinks(linksData,val,searchVal);
 });
 
 searchBox.addEventListener("input",()=>{
-  const val=searchBox.value.toLowerCase();
+  const searchVal=searchBox.value.toLowerCase();
   const grpVal=filterGroup.value;
-  renderLinks(linksData,grpVal,val);
+  renderLinks(linksData,grpVal,searchVal);
 });
 
-btnGrid.addEventListener("click",()=>{ container.classList.remove("list-view"); });
-btnList.addEventListener("click",()=>{ container.classList.add("list-view"); });
+btnGrid.addEventListener("click",()=>{
+  viewMode="grid"; localStorage.setItem("viewMode","grid"); renderLinks(linksData,filterGroup.value,searchBox.value.toLowerCase());
+});
+btnList.addEventListener("click",()=>{
+  viewMode="list"; localStorage.setItem("viewMode","list"); renderLinks(linksData,filterGroup.value,searchBox.value.toLowerCase());
+});
 
 // Load JSON
 fetch("links.json")
@@ -175,6 +190,5 @@ fetch("links.json")
 })
 .catch(err=>{ console.warn("Gagal load JSON",err); container.innerHTML="<p style='color:#fff'>Gagal memuat data 😞</p>"; });
 </script>
-
 </body>
 </html>
