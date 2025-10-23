@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pusat Link Full</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" crossorigin="anonymous">
+<title>Pusat Link Favorit</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <style>
 body {
   margin:0; font-family:Inter,sans-serif; background:#000; color:#e6eef8;
@@ -35,13 +35,14 @@ body {
 .preview-iframe { flex:1; width:100%; border:none; }
 .minimized { height:50px !important; }
 .highlight { border:2px solid #4d90fe; }
+.favorite { color:#ffd700 !important; }
 @media(max-width:800px){ .grid-view .group-container { grid-template-columns:1fr !important; } }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>Pusat Link</h1>
+  <h1>Pusat Link Favorit</h1>
   <div class="controls">
     <select id="filter-group"><option value="">Semua Grup</option></select>
     <input type="text" id="search-box" placeholder="Cari link...">
@@ -80,8 +81,9 @@ const searchBox=document.getElementById("search-box");
 const btnGrid=document.getElementById("btn-grid");
 const btnList=document.getElementById("btn-list");
 
-// Cek localStorage untuk mode
+// LocalStorage
 let viewMode = localStorage.getItem("viewMode") || "list";
+let favoriteLinks = JSON.parse(localStorage.getItem("favoriteLinks") || "[]");
 
 function renderLinks(links, highlightGroup=null, searchVal=""){
   container.innerHTML="";
@@ -98,6 +100,12 @@ function renderLinks(links, highlightGroup=null, searchVal=""){
 
   Object.keys(groups).forEach(group=>{
     if(highlightGroup && group!==highlightGroup) return;
+
+    // Pisahkan favorit
+    let favItems = groups[group].filter(l=>favoriteLinks.includes(l.url));
+    let normalItems = groups[group].filter(l=>!favoriteLinks.includes(l.url));
+    let finalItems = [...favItems,...normalItems];
+
     const groupContainer = document.createElement("div");
     groupContainer.className="group-container";
     const h=document.createElement("h2");
@@ -105,7 +113,7 @@ function renderLinks(links, highlightGroup=null, searchVal=""){
     h.textContent=group;
     groupContainer.appendChild(h);
 
-    groups[group].forEach(link=>{
+    finalItems.forEach(link=>{
       const item=document.createElement("div");
       item.className="link-btn";
       const info=document.createElement("div");
@@ -131,6 +139,26 @@ function renderLinks(links, highlightGroup=null, searchVal=""){
       openBtn.title="Buka Link";
       openBtn.addEventListener("click", e=>{ e.stopPropagation(); window.open(link.url,"_blank"); });
       buttons.appendChild(openBtn);
+
+      // Tombol favorit
+      const favBtn=document.createElement("button");
+      favBtn.className="btn-icon";
+      favBtn.innerHTML='<i class="fa-solid fa-star"></i>';
+      favBtn.title="Favorit";
+      if(favoriteLinks.includes(link.url)) favBtn.classList.add("favorite");
+      favBtn.addEventListener("click", e=>{
+        e.stopPropagation();
+        if(favoriteLinks.includes(link.url)){
+          favoriteLinks = favoriteLinks.filter(u=>u!==link.url);
+          favBtn.classList.remove("favorite");
+        } else {
+          favoriteLinks.push(link.url);
+          favBtn.classList.add("favorite");
+        }
+        localStorage.setItem("favoriteLinks",JSON.stringify(favoriteLinks));
+        renderLinks(linksData, filterGroup.value, searchBox.value.toLowerCase());
+      });
+      buttons.appendChild(favBtn);
 
       item.appendChild(info);
       item.appendChild(buttons);
@@ -172,10 +200,14 @@ searchBox.addEventListener("input",()=>{
 });
 
 btnGrid.addEventListener("click",()=>{
-  viewMode="grid"; localStorage.setItem("viewMode","grid"); renderLinks(linksData,filterGroup.value,searchBox.value.toLowerCase());
+  viewMode="grid"; 
+  localStorage.setItem("viewMode","grid"); 
+  renderLinks(linksData,filterGroup.value,searchBox.value.toLowerCase());
 });
 btnList.addEventListener("click",()=>{
-  viewMode="list"; localStorage.setItem("viewMode","list"); renderLinks(linksData,filterGroup.value,searchBox.value.toLowerCase());
+  viewMode="list"; 
+  localStorage.setItem("viewMode","list"); 
+  renderLinks(linksData,filterGroup.value,searchBox.value.toLowerCase());
 });
 
 // Load JSON
@@ -188,7 +220,7 @@ fetch("links.json")
   let groups=[...new Set(linksData.map(l=>l.grup?.trim()||"Tanpa Grup"))];
   filterGroup.innerHTML='<option value="">Semua Grup</option>'+groups.map(g=>`<option value="${g}">${g}</option>`).join('');
 })
-.catch(err=>{ console.warn("Gagal load JSON",err); container.innerHTML="<p style='color:#fff'>Gagal memuat data 😞</p>"; });
+.catch(err=>{ console.warn("Gagal load JSON",err); container.innerHTML="<p style='color:#fff'>Gagal memuat data</p>"; });
 </script>
 </body>
 </html>
