@@ -1,155 +1,161 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pusat Link Pratinjau</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <style>
-    body {
-      margin:0; padding:10px; background:#0f1724; font-family:Inter,sans-serif;
-      display:flex; flex-direction:column; align-items:center;
-    }
-    .links-container { width:100%; max-width:600px; display:grid; gap:12px; }
-    .link-btn {
-      display:flex; justify-content:space-between; align-items:center;
-      text-decoration:none; padding:12px; border-radius:12px;
-      background:rgba(255,255,255,0.06); color:#e6eef8;
-      transition:.12s; box-shadow:0 6px 18px rgba(2,6,23,0.45);
-    }
-    .link-btn:hover{ transform:translateY(-2px); box-shadow:0 8px 20px rgba(2,6,23,0.55); }
-    .link-info{ display:flex; align-items:center; gap:12px; }
-    .link-icon{ width:12%; min-width:40px; aspect-ratio:1/1; display:grid; place-items:center; font-size:1.3rem; color:#b7c1d6; background:rgba(255,255,255,0.02); border-radius:10px; }
-    .link-title{ margin:0; font-size:1rem; font-weight:600; word-break:break-word; }
-    .eye-btn{ background:none; border:none; color:#b7c1d6; cursor:pointer; font-size:1.3rem; transition:color .15s, transform .15s; }
-    .eye-btn:hover{ color:#ffffff; transform:scale(1.15); }
-    .group-title{ font-size:1.1rem; font-weight:700; color:#e6eef8; margin:20px 0 5px; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pusat Link Lengkap</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" crossorigin="anonymous">
+<style>
+body {
+  margin:0; padding:10px; background:#0f1724; font-family:Inter,sans-serif; color:#e6eef8;
+}
+.header { text-align:center; margin-bottom:10px; }
+h1 { margin:0 0 10px; font-size:2rem; }
+.controls { display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap; justify-content:center; }
+select, input { padding:6px 10px; border-radius:6px; border:none; outline:none; font-size:1rem; }
+.container { display:grid; gap:12px; }
+.group-title { font-size:1.5rem; font-weight:700; margin:20px 0 5px; border-bottom:1px solid #3a3f5a; padding-bottom:4px; }
+.link-btn { display:flex; justify-content:space-between; align-items:center; padding:12px; border-radius:12px; background:rgba(255,255,255,0.06); color:#e6eef8; box-shadow:0 6px 18px rgba(2,6,23,0.45); transition:.12s; }
+.link-btn:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(2,6,23,0.55); }
+.link-info { display:flex; gap:12px; align-items:center; }
+.link-icon { width:12%; min-width:40px; aspect-ratio:1/1; display:grid; place-items:center; font-size:1.3rem; color:#b7c1d6; background:rgba(255,255,255,0.02); border-radius:10px; }
+.link-title { margin:0; font-weight:600; word-break:break-word; }
+.link-buttons { display:flex; gap:6px; }
+.btn-icon { background:none; border:none; color:#b7c1d6; cursor:pointer; font-size:1.2rem; transition:.15s; }
+.btn-icon:hover { color:#fff; transform:scale(1.2); }
 
-    /* Popup */
-    .preview-popup {
-      display:none; position:fixed; inset:0;
-      background:rgba(0,0,0,0.65); backdrop-filter:blur(4px);
-      justify-content:center; align-items:center; z-index:999;
-    }
-    .preview-content {
-      width:90%; max-width:800px; height:75%;
-      background:#1a2433; border-radius:12px;
-      box-shadow:0 0 25px rgba(0,0,0,0.5); overflow:hidden;
-      position:relative; animation:fadeIn .3s ease;
-    }
-    .preview-content iframe {
-      width:100%; height:100%; border:none;
-    }
-    .close-preview {
-      position:absolute; top:10px; right:10px;
-      background:none; border:none; color:#fff;
-      font-size:1.5rem; cursor:pointer;
-      transition:transform .15s;
-    }
-    .close-preview:hover{ transform:scale(1.15); color:#ff6b6b; }
+/* Popup */
+.preview-popup { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); backdrop-filter:blur(4px); justify-content:center; align-items:center; z-index:999; }
+.preview-content { width:90%; max-width:800px; height:75%; background:#1a2433; border-radius:12px; box-shadow:0 0 25px rgba(0,0,0,0.5); overflow:hidden; position:relative; display:flex; flex-direction:column; }
+.preview-header { display:flex; justify-content:flex-end; gap:6px; background:#0f1724; padding:6px 10px; }
+.preview-iframe { flex:1; width:100%; border:none; }
 
-    .error-message {
-      color:#ff6b6b;
-      background:rgba(255,255,255,0.05);
-      padding:10px 15px;
-      border-radius:10px;
-      margin-top:15px;
-      font-size:0.95rem;
-      text-align:center;
-    }
-
-    @keyframes fadeIn { from{opacity:0; transform:scale(0.95);} to{opacity:1; transform:scale(1);} }
-    @media(max-width:480px){
-      .link-icon{min-width:36px; font-size:1.1rem;}
-      .link-title{font-size:0.95rem;}
-      .link-btn{padding:10px;}
-    }
-  </style>
+.minimized { height:50px !important; }
+</style>
 </head>
 <body>
-  <main class="links-container" id="link-container"></main>
 
-  <!-- Popup Pratinjau -->
-  <div class="preview-popup" id="preview-popup">
-    <div class="preview-content">
-      <button class="close-preview" id="close-preview"><i class="fa-solid fa-eye-slash"></i></button>
-      <iframe id="preview-frame" title="Pratinjau"></iframe>
-    </div>
+<div class="header">
+  <h1>Pusat Link</h1>
+  <div class="controls">
+    <select id="filter-group"><option value="">Semua Grup</option></select>
+    <input type="text" id="search-box" placeholder="Cari link...">
   </div>
+</div>
 
-  <!-- Pesan error -->
-  <div id="error-container"></div>
+<div class="container" id="link-container"></div>
 
-  <script>
-    const container = document.getElementById("link-container");
-    const popup = document.getElementById("preview-popup");
-    const frame = document.getElementById("preview-frame");
-    const closeBtn = document.getElementById("close-preview");
-    const errorContainer = document.getElementById("error-container");
+<!-- Popup -->
+<div class="preview-popup" id="preview-popup">
+  <div class="preview-content" id="preview-content">
+    <div class="preview-header">
+      <button class="btn-icon" id="btn-minimize" title="Minimize"><i class="fa-solid fa-minus"></i></button>
+      <button class="btn-icon" id="btn-maximize" title="Maximize"><i class="fa-solid fa-expand"></i></button>
+      <button class="btn-icon" id="btn-go" title="Buka Link"><i class="fa-solid fa-arrow-up-right-from-square"></i></button>
+      <button class="btn-icon" id="btn-close" title="Tutup"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <iframe id="preview-frame" class="preview-iframe" title="Pratinjau"></iframe>
+  </div>
+</div>
 
-    function renderLinks(links) {
-      const grouped = {};
-      links.forEach(link => {
-        const g = link.grup?.trim() || "Tanpa Grup";
-        if (!grouped[g]) grouped[g] = [];
-        grouped[g].push(link);
-      });
+<script>
+let linksData = [];
+const container = document.getElementById("link-container");
+const popup = document.getElementById("preview-popup");
+const frame = document.getElementById("preview-frame");
+const content = document.getElementById("preview-content");
+const btnClose = document.getElementById("btn-close");
+const btnMin = document.getElementById("btn-minimize");
+const btnMax = document.getElementById("btn-maximize");
+const btnGo = document.getElementById("btn-go");
+const filterGroup = document.getElementById("filter-group");
+const searchBox = document.getElementById("search-box");
 
-      Object.keys(grouped).forEach(grup => {
-        if (grup !== "Tanpa Grup") {
-          const groupTitle = document.createElement("h2");
-          groupTitle.className = "group-title";
-          groupTitle.textContent = grup;
-          container.appendChild(groupTitle);
-        }
+function renderLinks(links) {
+  container.innerHTML = "";
+  let groups = {};
+  links.forEach(link => {
+    const g = link.grup?.trim() || "Tanpa Grup";
+    if(!groups[g]) groups[g]=[];
+    groups[g].push(link);
+  });
 
-        grouped[grup].forEach(link => {
-          const item = document.createElement("div");
-          item.className = "link-btn";
+  // update filter dropdown
+  filterGroup.innerHTML = '<option value="">Semua Grup</option>';
+  Object.keys(groups).forEach(g => filterGroup.innerHTML += `<option value="${g}">${g}</option>`);
 
-          const info = document.createElement("div");
-          info.className = "link-info";
-          info.innerHTML = `
-            <div class="link-icon"><i class="${link.icon}"></i></div>
-            <p class="link-title">${link.title}</p>
-          `;
-
-          const eyeBtn = document.createElement("button");
-          eyeBtn.className = "eye-btn";
-          eyeBtn.innerHTML = '<i class="fa-solid fa-eye"></i>';
-          eyeBtn.addEventListener("click", () => {
-            frame.src = link.url;
-            popup.style.display = "flex";
-          });
-
-          item.appendChild(info);
-          item.appendChild(eyeBtn);
-          container.appendChild(item);
-        });
-      });
+  Object.keys(groups).forEach(group => {
+    if(group !== "Tanpa Grup"){
+      const h = document.createElement("h2");
+      h.className = "group-title";
+      h.textContent = group;
+      container.appendChild(h);
     }
+    groups[group].forEach(link=>{
+      const item = document.createElement("div");
+      item.className="link-btn";
+      const info = document.createElement("div");
+      info.className="link-info";
+      info.innerHTML=`<div class="link-icon"><i class="${link.icon}"></i></div>
+      <p class="link-title">${link.title}</p>`;
+      const buttons = document.createElement("div");
+      buttons.className="link-buttons";
 
-    closeBtn.addEventListener("click", () => {
-      popup.style.display = "none";
-      frame.src = "";
+      // Tombol mata preview
+      const eyeBtn = document.createElement("button");
+      eyeBtn.className="btn-icon";
+      eyeBtn.innerHTML='<i class="fa-solid fa-eye"></i>';
+      eyeBtn.title="Pratinjau";
+      eyeBtn.addEventListener("click",()=>{ openPopup(link.url); });
+      buttons.appendChild(eyeBtn);
+
+      item.appendChild(info);
+      item.appendChild(buttons);
+      container.appendChild(item);
     });
+  });
+}
 
-    // Ambil data dari links.json
-    fetch("links.json")
-      .then(res => {
-        if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
-        return res.json();
-      })
-      .then(d => renderLinks(d.links))
-      .catch(err => {
-        console.error("Gagal load JSON:", err);
-        errorContainer.innerHTML = `
-          <div class="error-message">
-            <strong>Kesalahan saat memuat data:</strong> ${err.message} <br>
-            Pastikan file <code>links.json</code> ada, format JSON benar, dan server mendukung akses.
-          </div>
-        `;
-      });
-  </script>
+function openPopup(url){
+  frame.src = url;
+  popup.style.display="flex";
+  content.classList.remove("minimized");
+  btnMax.style.display="inline-block";
+  btnMin.style.display="inline-block";
+  btnGo.onclick = ()=> window.open(url,"_blank");
+  btnMax.onclick = ()=> content.style.height="75%";
+  btnMin.onclick = ()=> content.classList.add("minimized");
+}
+
+btnClose.onclick = ()=> { popup.style.display="none"; frame.src=""; }
+
+filterGroup.addEventListener("change",()=>{
+  const val = filterGroup.value;
+  const filtered = val ? linksData.filter(l=> (l.grup||"Tanpa Grup")===val) : linksData;
+  const searchVal = searchBox.value.toLowerCase();
+  renderLinks(filtered.filter(l=>l.title.toLowerCase().includes(searchVal)));
+});
+
+searchBox.addEventListener("input",()=>{
+  const val = searchBox.value.toLowerCase();
+  const grpVal = filterGroup.value;
+  let filtered = linksData;
+  if(grpVal) filtered = filtered.filter(l=> (l.grup||"Tanpa Grup")===grpVal);
+  renderLinks(filtered.filter(l=>l.title.toLowerCase().includes(val)));
+});
+
+// Load JSON
+fetch("links.json")
+.then(r=>r.json())
+.then(d=>{
+  linksData=d.links;
+  renderLinks(linksData);
+})
+.catch(err=>{
+  console.warn("Gagal load JSON",err);
+  container.innerHTML="<p style='color:#fff'>Gagal memuat data 😞</p>";
+});
+</script>
+
 </body>
 </html>
