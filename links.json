@@ -2,12 +2,27 @@
   "links": [
     {
       "title": "YouTube KuningMinumOfficial",
-      "url": "https://www.youtube.com/@kuningminumofficial",
+      "url": "https://www.youtube.com/@KuningMinumOfficial",
       "icon": "fab fa-youtube"
     },
     {
-      "title": "YouTube ahmadrijaniofficial",
-      "url": "https://youtube.com/@ahmadrijaniofficial?si=806boP2yOf5pcYI4",
+      "title": "YouTube AhmadRijaniOfficial",
+      "url": "https://www.youtube.com/@AhmadRijaniOfficial",
+      "icon": "fab fa-youtube"
+    },
+    {
+      "title": "YouTube JasonGameDev",
+      "url": "https://www.youtube.com/@JasonGameDev",
+      "icon": "fab fa-youtube"
+    },
+    {
+      "title": "YouTube Ero4Studio",
+      "url": "https://www.youtube.com/@Ero4.Studio",
+      "icon": "fab fa-youtube"
+    },
+    {
+      "title": "YouTube Ero4Entertainment",
+      "url": "https://www.youtube.com/@Ero4Entertainment",
       "icon": "fab fa-youtube"
     },
     {
@@ -16,7 +31,7 @@
       "icon": "fas fa-hand-holding-heart"
     },
     {
-      "title": "Blogspot ahmadrijaniofficial",
+      "title": "Blogspot AhmadRijaniOfficial",
       "url": "https://ahmadrijaniofficial.blogspot.com/",
       "icon": "fas fa-blog"
     },
