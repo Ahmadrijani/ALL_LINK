@@ -68,7 +68,6 @@ let currentLang = localStorage.getItem("lang") || "id";
 const container=document.getElementById("link-container");
 const popup=document.getElementById("preview-popup");
 const frame=document.getElementById("preview-frame");
-const content=document.getElementById("preview-content");
 const btnClose=document.getElementById("btn-close");
 const btnGo=document.getElementById("btn-go");
 const searchBox=document.getElementById("search-box");
@@ -227,22 +226,41 @@ function updateUI(){
   searchBox.placeholder = currentLang==="id"?"Cari link...":"Search link...";
 }
 
-// Load local + global
+// Load lokal + global dengan toleransi error
 async function loadLinks(){
   let allLinks=[];
+  let localLoaded=false, globalLoaded=false;
+
+  // Load lokal
   try{
     let resLocal = await fetch("links.json");
     let localLinks = await resLocal.json();
-    if(localLinks.links) allLinks.push(...localLinks.links.map(l=>({...l,type:"local"})));
-  } catch{ notify("Error loading local data","error"); }
+    if(localLinks.links) {
+      allLinks.push(...localLinks.links.map(l=>({...l,type:"local"})));
+      localLoaded=true;
+    }
+  } catch(err){
+    console.warn("Local data failed:", err);
+  }
 
+  // Load global
   try{
     let resGlobal = await fetch("https://raw.githubusercontent.com/KuningMinum/Kumin/refs/heads/main/link_global.json");
     let globalLinks = await resGlobal.json();
-    if(globalLinks.links) allLinks.push(...globalLinks.links.map(l=>({...l,type:"global"})));
-  } catch{ notify("Error loading global data","error"); }
+    if(globalLinks.links) {
+      allLinks.push(...globalLinks.links.map(l=>({...l,type:"global"})));
+      globalLoaded=true;
+    }
+  } catch(err){
+    console.warn("Global data failed:", err);
+  }
 
-  notify(currentLang==="id"?"Data berhasil dimuat":"Data loaded successfully","success");
+  if(localLoaded || globalLoaded){
+    notify(currentLang==="id"?"Data berhasil dimuat":"Data loaded successfully","success");
+  } else {
+    notify(currentLang==="id"?"Tidak ada data, hanya favorit yang tampil":"No data available, favorites only","error");
+  }
+
   return allLinks;
 }
 
@@ -259,7 +277,11 @@ loadLinks().then(d=>{
   linksData=d;
   renderLinks(linksData);
   updateUI();
-}).catch(()=>{ container.innerHTML="<p style='color:#fff'>"+(currentLang==="id"?"Gagal memuat data":"Failed to load data")+"</p>"; notify(currentLang==="id"?"Gagal memuat data":"Failed to load data","error"); });
+}).catch(err=>{
+  console.error(err);
+  notify(currentLang==="id"?"Gagal memuat data":"Failed to load data","error");
+  renderLinks([]); // tampil favorit saja
+});
 </script>
 </body>
 </html>
