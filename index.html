@@ -68,6 +68,7 @@ let currentLang = localStorage.getItem("lang") || "id";
 const container=document.getElementById("link-container");
 const popup=document.getElementById("preview-popup");
 const frame=document.getElementById("preview-frame");
+const content=document.getElementById("preview-content");
 const btnClose=document.getElementById("btn-close");
 const btnGo=document.getElementById("btn-go");
 const searchBox=document.getElementById("search-box");
@@ -226,59 +227,39 @@ function updateUI(){
   searchBox.placeholder = currentLang==="id"?"Cari link...":"Search link...";
 }
 
-// Load localStorage -> lokal -> global
-async function loadLinks() {
-  let allLinks = [];
-
-  // 1. Load dari localStorage
-  let storedLinks = JSON.parse(localStorage.getItem("localLinks") || "[]");
-  if(storedLinks.length > 0) allLinks.push(...storedLinks);
-
-  // 2. Load lokal
+// Load local + global
+async function loadLinks(){
+  let allLinks=[];
   try{
     let resLocal = await fetch("links.json");
     let localLinks = await resLocal.json();
-    if(localLinks.links) {
-      allLinks = [...allLinks.filter(l=>l.type!=="local"), ...localLinks.links.map(l=>({...l,type:"local"}))];
-      localStorage.setItem("localLinks",JSON.stringify(localLinks.links));
-      notify(currentLang==="id"?"Data lokal berhasil dimuat":"Local data loaded","success");
-    }
-  } catch(err){
-    console.error("Local load error:", err);
-    notify(currentLang==="id"?"Gagal memuat data lokal, pakai cache":"Failed to load local data, using cache","error");
-  }
+    if(localLinks.links) allLinks.push(...localLinks.links.map(l=>({...l,type:"local"})));
+  } catch{ notify("Error loading local data","error"); }
 
-  // 3. Load global
   try{
     let resGlobal = await fetch("https://raw.githubusercontent.com/KuningMinum/Kumin/refs/heads/main/link_global.json");
     let globalLinks = await resGlobal.json();
     if(globalLinks.links) allLinks.push(...globalLinks.links.map(l=>({...l,type:"global"})));
-    notify(currentLang==="id"?"Data global berhasil dimuat":"Global data loaded","success");
-  } catch(err){
-    console.error("Global load error:", err);
-    notify(currentLang==="id"?"Gagal memuat data global":"Failed to load global data","error");
-  }
+  } catch{ notify("Error loading global data","error"); }
 
+  notify(currentLang==="id"?"Data berhasil dimuat":"Data loaded successfully","success");
   return allLinks;
 }
 
 // Notifikasi
 function notify(message,type="info"){
   sourceText.textContent = message;
-  sourceText.style.background = type==="error"?"#ff4d4d":type==="success"?"#4dff88":"#999";
+  sourceText.style.background = type==="error"?"#ff4d4d":"#4dff88";
   sourceText.style.opacity = 1;
   setTimeout(()=>{ sourceText.style.opacity = 0; },3000);
 }
 
 // Init
 loadLinks().then(d=>{
-  linksData = d;
-  renderLinks(linksData, searchBox.value.toLowerCase());
+  linksData=d;
+  renderLinks(linksData);
   updateUI();
-}).catch(()=>{ 
-  renderLinks([], searchBox.value.toLowerCase());
-  notify(currentLang==="id"?"Gagal memuat data, hanya favorit tampil":"Failed to load data, only favorites are displayed","error");
-});
+}).catch(()=>{ container.innerHTML="<p style='color:#fff'>"+(currentLang==="id"?"Gagal memuat data":"Failed to load data")+"</p>"; notify(currentLang==="id"?"Gagal memuat data":"Failed to load data","error"); });
 </script>
 </body>
 </html>
