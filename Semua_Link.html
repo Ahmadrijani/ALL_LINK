@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Loader HTML Remote</title>
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; margin: 16px; background: #f6f8fb; color: #111; }
+    header { display:flex; gap:12px; align-items:center; margin-bottom:12px; }
+    input[type="text"]{ width:60%; padding:8px; border-radius:6px; border:1px solid #ccc; }
+    button{ padding:8px 12px; border-radius:6px; border:0; cursor:pointer; background:#2563eb; color:white; }
+    button.secondary{ background:#6b7280; }
+    .note{ margin-top:8px; font-size:13px; color:#444; }
+    iframe{ width:100%; height:70vh; border:1px solid #ddd; border-radius:8px; background:white; }
+    pre.error{ background:#ffecec; color:#b00020; padding:8px; border-radius:6px; }
+  </style>
+</head>
+<body>
+  <header>
+    <input id="urlInput" type="text"
+      value="https://raw.githubusercontent.com/Ahmadrijani/ALL_LINK/refs/heads/main/index.html"
+      aria-label="URL file HTML" />
+    <button id="loadBtn">Muat & Jalankan</button>
+    <button id="openNewBtn" class="secondary">Buka di Jendela Baru</button>
+  </header>
+
+  <div class="note">Catatan: script akan mengambil konten HTML dari URL lalu menaruhnya di sebuah <code>iframe</code>. Jika ada resource relatif, kode akan menambahkan <code>&lt;base&gt;</code> supaya path relatif mengarah ke folder index.html. 🥹</div>
+
+  <div id="errorBox"></div>
+
+  <iframe id="previewFrame" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+
+  <script>
+    const loadBtn = document.getElementById('loadBtn');
+    const openNewBtn = document.getElementById('openNewBtn');
+    const urlInput = document.getElementById('urlInput');
+    const previewFrame = document.getElementById('previewFrame');
+    const errorBox = document.getElementById('errorBox');
+
+    // Fungsi utama: fetch + tampilkan di iframe
+    async function loadAndRun(url, openInNewWindow = false) {
+      errorBox.innerHTML = '';
+      try {
+        const resp = await fetch(url, { cache: 'no-store' });
+        if (!resp.ok) throw new Error(`HTTP ${resp.status} ${resp.statusText}`);
+        let html = await resp.text();
+
+        // Tentukan base href untuk resource relatif
+        // Ambil direktori dari URL (hapus bagian filename)
+        const urlObj = new URL(url);
+        // Jika URL mengarah ke file, kita gunakan foldernya sebagai base
+        const dir = urlObj.href.replace(/\/[^\/?#]*([?#].*)?$/, '/');
+
+        // Sisipkan tag <base> di head (jika sudah ada head, kalau tidak tambahkan)
+        // Agar resource relatif di HTML remote mengarah ke direktori yang sama di raw.githubusercontent
+        if (/\<head[\s\S]*?\>/i.test(html)) {
+          html = html.replace(/<head([^>]*)>/i, `<head$1>\n<base href="${dir}">`);
+        } else {
+          // Tidak ada <head>, letakkan base di awal dokumen
+          html = `<base href="${dir}">\n` + html;
+        }
+
+        // Beberapa HTML mungkin memerlukan Content-Security-Policy atau tidak mengizinkan inline script.
+        // Menggunakan srcdoc atau blob. Kita akan gunakan srcdoc bila didukung.
+        // Penggunaan sandbox di iframe membatasi akses; sandbox attribute di atas memberikan allow-scripts dan allow-same-origin.
+        // Jika openInNewWindow true, buka konten di jendela baru (menggunakan Blob)
+        if (openInNewWindow) {
+          const blob = new Blob([html], { type: 'text/html' });
+          const blobUrl = URL.createObjectURL(blob);
+          window.open(blobUrl, '_blank');
+          // Optional: revoke setelah beberapa detik
+          setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
+        } else {
+          // Gunakan srcdoc (lebih sederhana)
+          previewFrame.removeAttribute('src'); // bersihkan dulu
+          previewFrame.srcdoc = html;
+        }
+
+      } catch (err) {
+        console.error(err);
+        errorBox.innerHTML = `<pre class="error">Gagal memuat: ${err.message}</pre>`;
+      }
+    }
+
+    loadBtn.addEventListener('click', () => {
+      const url = urlInput.value.trim();
+      if (!url) return;
+      loadAndRun(url, false);
+    });
+
+    openNewBtn.addEventListener('click', () => {
+      const url = urlInput.value.trim();
+      if (!url) return;
+      loadAndRun(url, true);
+    });
+
+    // Muat otomatis pada pembukaan halaman
+    window.addEventListener('load', () => {
+      // Jika mau auto-load langsung, uncomment baris berikut:
+      // loadAndRun(urlInput.value);
+    });
+  </script>
+</body>
+</html>
