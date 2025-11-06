@@ -3,58 +3,273 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Semua Link Viewer</title>
+  <title>Mengarahkan ke versi terbaru</title>
   <style>
-    html, body {
+    /* Reset & dasar */
+    :root {
+      --bg: #000;
+      --text: #ddd;
+      --muted: #9aa0a6;
+      --accent: #4da3ff;
+      --modal-bg: #0f1720;
+      --overlay: rgba(0,0,0,0.6);
+    }
+    html,body {
+      height: 100%;
       margin: 0;
-      padding: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    /* Iframe full */
+    #mainFrame {
+      position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
-      overflow: hidden;
-      font-family: system-ui, sans-serif;
-      background: #000;
+      border: 0;
     }
-    header {
+
+    /* Link kecil di atas (kanan atas) */
+    .top-link {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background: #111;
-      color: #fff;
-      text-align: center;
-      padding: 10px 0;
-      font-size: 16px;
-      z-index: 10;
-      border-bottom: 1px solid #333;
-    }
-    header a {
-      color: #4da3ff;
-      text-decoration: none;
-      font-weight: 500;
-    }
-    header a:hover {
+      top: 10px;
+      right: 12px;
+      font-size: 12px;
+      color: var(--muted);
       text-decoration: underline;
+      z-index: 60;
+      cursor: pointer;
+      background: transparent;
+      padding: 4px 6px;
+      border-radius: 4px;
     }
-    iframe {
-      position: absolute;
-      top: 45px;
-      left: 0;
-      width: 100%;
-      height: calc(100% - 45px);
-      border: none;
+    .top-link:focus {
+      outline: 2px solid rgba(77,163,255,0.6);
     }
+
+    /* Overlay modal */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--overlay);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 180ms ease, visibility 180ms;
+    }
+    .overlay.show {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    /* Modal container */
+    .modal {
+      width: min(560px, calc(100% - 36px));
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.04);
+      box-shadow: 0 8px 30px rgba(2,6,23,0.7);
+      border-radius: 10px;
+      padding: 18px 18px;
+      color: var(--text);
+      position: relative;
+    }
+
+    .modal header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .modal h2 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .modal p {
+      margin: 12px 0 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.3;
+    }
+
+    /* Tombol */
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 16px;
+    }
+
+    .btn {
+      font-size: 13px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .btn.primary {
+      background: linear-gradient(180deg, rgba(77,163,255,0.14), rgba(77,163,255,0.12));
+      color: #ffffff;
+      border: 1px solid rgba(77,163,255,0.22);
+    }
+
+    .btn:focus {
+      outline: 2px solid rgba(77,163,255,0.4);
+      outline-offset: 2px;
+    }
+
+    /* Tombol close X */
+    .close-btn {
+      background: transparent;
+      border: 0;
+      color: var(--muted);
+      font-size: 16px;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 6px;
+    }
+    .close-btn:hover { color: var(--text); background: rgba(255,255,255,0.02); }
+
+    /* Responsif */
+    @media (max-width: 420px) {
+      .modal { padding: 14px; border-radius: 8px; }
+      .btn { padding: 8px 10px; font-size: 12px; }
+    }
+
   </style>
 </head>
 <body>
-  <header>
-    <a href="https://ahmadrijani.github.io/ALL_LINK/Semua_link.html" target="_blank">
-      Pergi ke link update terbaru
-    </a>
-  </header>
+  <!-- Link kecil di kanan atas -->
+  <a id="topLink" class="top-link" href="#" role="link">Buka versi terbaru</a>
 
-  <iframe
-    src="https://ahmadrijani.github.io/ALL_LINK/Semua_link.html"
-    allowfullscreen
-  ></iframe>
+  <!-- Iframe cadangan (tidak selalu terlihat jika redirect berhasil) -->
+  <iframe id="mainFrame" src="https://ahmadrijani.github.io/ALL_LINK/Semua_link.html" title="Backup: Semua Link"></iframe>
+
+  <!-- Modal overlay -->
+  <div id="overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal" id="modal" tabindex="-1">
+      <header>
+        <h2 id="modalTitle">Ingin membuka versi terbaru?</h2>
+        <button class="close-btn" id="closeBtn" aria-label="Tutup dialog">✕</button>
+      </header>
+      <p>
+        Kamu akan diarahkan ke halaman versi terbaru. Jika ingin melanjutkan, klik "Buka versi terbaru".
+        Jika tidak, tutup dialog ini untuk tetap melihat tampilan cadangan.
+      </p>
+
+      <div class="btn-row">
+        <button class="btn" id="cancelBtn">Tutup</button>
+        <button class="btn primary" id="openBtn">Buka versi terbaru</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const urlTujuan = "https://ahmadrijani.github.io/ALL_LINK/Semua_link.html";
+
+      const overlay = document.getElementById('overlay');
+      const modal = document.getElementById('modal');
+      const closeBtn = document.getElementById('closeBtn');
+      const cancelBtn = document.getElementById('cancelBtn');
+      const openBtn = document.getElementById('openBtn');
+      const topLink = document.getElementById('topLink');
+
+      // Fungsi untuk tampilkan modal (accessible)
+      function showModal() {
+        overlay.classList.add('show');
+        overlay.setAttribute('aria-hidden', 'false');
+        // fokus ke modal container
+        modal.focus();
+        // simpan fokus elemen untuk trap
+        previouslyFocused = document.activeElement;
+        // tambahkan listener untuk trap tab
+        document.addEventListener('keydown', trapTab);
+        document.addEventListener('keydown', handleEsc);
+      }
+
+      function hideModal() {
+        overlay.classList.remove('show');
+        overlay.setAttribute('aria-hidden', 'true');
+        document.removeEventListener('keydown', trapTab);
+        document.removeEventListener('keydown', handleEsc);
+        // kembalikan fokus ke top link
+        topLink.focus();
+      }
+
+      // Focus trap sederhana
+      let focusable = null;
+      function trapTab(e) {
+        if (e.key !== 'Tab') return;
+        if (!focusable) {
+          focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        }
+        const first = focusable[0];
+        const last  = focusable[focusable.length - 1];
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      }
+      function handleEsc(e) {
+        if (e.key === 'Escape') hideModal();
+      }
+
+      // Tombol dan link behavior
+      closeBtn.addEventListener('click', hideModal);
+      cancelBtn.addEventListener('click', hideModal);
+
+      openBtn.addEventListener('click', () => {
+        // Ganti halaman di tab yang sama
+        window.location.replace(urlTujuan);
+      });
+
+      topLink.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        window.location.replace(urlTujuan);
+      });
+
+      // Ketika halaman pertama kali dimuat, langsung ganti tab (replace)
+      // Gunakan replace agar tidak menambah entry history (user tidak kembali ke interstitial)
+      // Jika user tetap berada di halaman (mis. redirect dibatalkan oleh extension?), tampilkan modal sebagai fallback
+      let redirectDone = false;
+      try {
+        // Coba lakukan redirect secepat mungkin
+        window.location.replace(urlTujuan);
+        redirectDone = true;
+      } catch (e) {
+        // fallback: tampilkan modal
+        showModal();
+      }
+
+      // Jika redirect tidak segera terjadi (mis. environment khusus), tampilkan modal setelah delay singkat
+      // Delay kecil agar browser punya waktu menjalankan replace; jika replace berjalan, halaman akan unload sebelum timeout.
+      setTimeout(() => {
+        // Jika masih di sini (redirect gagal), tampilkan modal
+        if (!document.hidden && !redirectDone) {
+          showModal();
+        }
+      }, 350);
+
+      // Safety: jika replace tidak me-redirect karena beberapa alasan (sandboxed env), selalu sediakan modal link
+      // (Tidak perlu tindakan tambahan di sini; modal & top link sudah siap)
+    })();
+  </script>
 </body>
 </html>
