@@ -1,11 +1,32 @@
-CLONE
+<div id="topBar" style="display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:12px;">
+  <span>CLONE</span>
+  <button id="manualBtn" style="
+    padding:6px 12px;
+    border-radius:8px;
+    border:1px solid #2b8cff;
+    background:linear-gradient(180deg,#2b8cff,#1f6fd8);
+    color:white;
+    cursor:pointer;
+    font-weight:bold;
+  ">Pindah Manual</button>
+</div>
 
-<div id="konten"></div>
+<div id="konten" style="position:relative; display:flex; flex-direction:column; align-items:center;"></div>
 
 <script>
+const manualBtn = document.getElementById("manualBtn");
+const topBar = document.getElementById("topBar");
+const konten = document.getElementById("konten");
+const redirectUrl = "https://ahmadrijani.github.io/ahmadrijaniofficial/Semua.link/link.html";
+
+manualBtn.addEventListener("click", () => {
+  window.location.href = redirectUrl;
+});
+
 async function loadExternalPage(url) {
     try {
         let res = await fetch(url);
+        if (!res.ok) throw new Error("HTTP error " + res.status);
         let html = await res.text();
 
         const parser = document.createElement("div");
@@ -15,25 +36,59 @@ async function loadExternalPage(url) {
 
         const cleanHTML = parser.cloneNode(true);
         cleanHTML.querySelectorAll("script").forEach(s => s.remove());
-        document.getElementById("konten").appendChild(cleanHTML);
+        konten.appendChild(cleanHTML);
 
         for (let s of scripts) {
             const newScript = document.createElement("script");
-
-            if (s.src) {
-                newScript.src = s.src;
-            } else {
-                newScript.textContent = s.textContent;
-            }
-
+            if (s.src) newScript.src = s.src;
+            else newScript.textContent = s.textContent;
             document.body.appendChild(newScript);
             newScript.remove();
         }
 
     } catch (err) {
-        document.getElementById("konten").innerHTML =
-            "<h2 style='color:red;text-align:center'>Gagal memuat halaman 😭</h2>";
         console.error(err);
+        konten.innerHTML = "";
+
+        topBar.style.display = "flex";
+        topBar.style.flexDirection = "column";
+        topBar.style.alignItems = "center";
+
+        manualBtn.style.padding = "14px 28px";
+        manualBtn.style.fontSize = "20px";
+        manualBtn.style.borderRadius = "12px";
+
+        const errorDiv = document.createElement("div");
+        errorDiv.style.color = "red";
+        errorDiv.style.textAlign = "center";
+        errorDiv.style.marginBottom = "20px";
+        errorDiv.innerHTML = "<strong>Gagal memuat halaman.</strong><br>Alasan: " + err.message;
+        konten.appendChild(errorDiv);
+
+        const spinnerDiv = document.createElement("div");
+        spinnerDiv.style.width = "100px";
+        spinnerDiv.style.height = "100px";
+        spinnerDiv.style.border = "8px solid rgba(0,0,0,0.1)";
+        spinnerDiv.style.borderTopColor = "#2b8cff";
+        spinnerDiv.style.borderRadius = "50%";
+        spinnerDiv.style.display = "flex";
+        spinnerDiv.style.alignItems = "center";
+        spinnerDiv.style.justifyContent = "center";
+        spinnerDiv.style.fontWeight = "bold";
+        spinnerDiv.style.fontSize = "24px";
+        konten.appendChild(spinnerDiv);
+
+        let countdown = 30;
+        spinnerDiv.textContent = countdown;
+
+        const intervalId = setInterval(() => {
+            countdown--;
+            spinnerDiv.textContent = countdown;
+            if (countdown <= 0) {
+                clearInterval(intervalId);
+                window.location.href = redirectUrl;
+            }
+        }, 1000);
     }
 }
 
