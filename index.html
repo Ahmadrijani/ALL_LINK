@@ -1,258 +1,41 @@
-<!doctype html>
-<html lang="id">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mengarahkan...</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<style>
-:root{
-  --bg:#e9ecef;
-  --card:#ffffff;
-  --muted:#6b7280;
-  --accent:#2b8cff;
-  --error:#ef4444;
-  --glass-border: rgba(0,0,0,0.06);
-  --radius:14px;
-  --shadow: 0 10px 30px rgba(15,23,42,0.12);
-}
+CLONE
 
-html,body{
-  height:100%;
-  margin:0;
-  background:var(--bg);
-  font-family:"Comic Sans MS","Comic Sans","ComicNeue",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
-  display:grid;
-  place-items:center;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-}
-
-.card{
-  position:relative;
-  width:95%;
-  max-width:400px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(250,250,250,0.96));
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-  border:1px solid var(--glass-border);
-  padding:28px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:14px;
-  text-align:center;
-}
-
-.top-banner{
-  width:100%;
-  font-size:14px;
-  color:var(--muted);
-  display:flex;
-  justify-content:center;
-  gap:6px;
-  flex-wrap:wrap;
-}
-.top-banner a{
-  color:var(--accent);
-  font-weight:600;
-  text-decoration:none;
-}
-
-.error-title{
-  font-size:24px;
-  font-weight:bold;
-  color:var(--error);
-}
-
-.spinner-container{
-  position:relative;
-  width:100px;
-  height:100px;
-  display:grid;
-  place-items:center;
-  margin-top:10px;
-}
-
-.spinner{
-  width:100px;
-  height:100px;
-  border-radius:50%;
-  border:8px solid rgba(0,0,0,0.06);
-  border-top-color:var(--accent);
-  animation:spin 1s linear infinite;
-  display:grid;
-  place-items:center;
-  font-weight:bold;
-  font-size:22px;
-  color:var(--accent);
-  position:absolute;
-  pointer-events:none;
-}
-
-.spinner.error{
-  border-top-color: var(--error);
-  color:var(--error);
-  animation:none;
-}
-
-@keyframes spin{ to { transform: rotate(360deg); } }
-
-.info{
-  font-size:18px;
-  font-weight:700;
-  color:#0f172a;
-}
-
-.status{
-  font-size:13px;
-  color:var(--muted);
-}
-
-.controls{
-  display:flex;
-  gap:12px;
-  flex-wrap:wrap;
-  justify-content:center;
-  margin-top:6px;
-}
-
-button{
-  background:none;
-  border:1px solid rgba(15,23,42,0.06);
-  color:#0f172a;
-  padding:12px 20px;
-  border-radius:12px;
-  cursor:pointer;
-  font-size:16px;
-  display:flex;
-  gap:8px;
-  align-items:center;
-  transition:all .12s ease;
-}
-
-button.primary{
-  background:linear-gradient(180deg, var(--accent), #1f6fd8);
-  color:white;
-  border:none;
-}
-button:active{ transform:translateY(1px) scale(.998); }
-
-.bigX{
-  width:140px;
-  height:140px;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  font-size:48px;
-  color:#ef4444;
-  background:rgba(255,255,255,0.85);
-  border:2px solid rgba(0,0,0,0.06);
-  cursor:pointer;
-  margin-top:16px;
-  font-weight:bold;
-}
-
-.address{
-  font-size:14px;
-  color:var(--muted);
-  margin-top:12px;
-}
-
-@media(max-width:480px){
-  .spinner{ width:80px; height:80px; font-size:18px; }
-  .bigX{ width:120px; height:120px; font-size:42px; }
-  .card{ padding:20px; max-width:90%; }
-}
-</style>
-</head>
-<body>
-<div class="card" role="dialog" aria-labelledby="info" aria-describedby="status">
-
-  <div class="error-title">404 NOT FOUND</div>
-
-  <div class="top-banner">
-    <i class="fa-solid fa-location-arrow"></i>
-    Alamat lama sudah dipindahkan ke 
-    <a href="https://ahmadrijani.github.io/ahmadrijaniofficial/Semua.link/link.html" target="_blank">link baru</a>
-  </div>
-
-  <div class="spinner-container">
-    <div class="spinner" id="spinner">60</div>
-  </div>
-
-  <div class="info" id="info">Mengarahkan ke versi terbaru...</div>
-  <div class="status" id="status">Tekan <strong>ESC</strong> atau klik ❌ untuk membatalkan. Setelah dibatalkan, akan mencoba lagi dalam 60 detik.</div>
-
-  <div class="bigX" id="batalVirtual">✖</div>
-
-</div>
+<div id="konten"></div>
 
 <script>
-(function(){
-  const urlTujuan = "https://ahmadrijani.github.io/ahmadrijaniofficial/Semua.link/link.html";
-  const spinner = document.getElementById('spinner');
-  const batalVirtual = document.getElementById('batalVirtual');
-  const info = document.getElementById('info');
-  const status = document.getElementById('status');
+async function loadExternalPage(url) {
+    try {
+        let res = await fetch(url);
+        let html = await res.text();
 
-  let batal = false;
-  let mencobaLagi = false;
-  let cooldownId = null;
-  let retryRemaining = 60;
-  let redirected = false;
+        const parser = document.createElement("div");
+        parser.innerHTML = html;
 
-  spinner.textContent = retryRemaining; // angka statis di tengah spinner
+        const scripts = parser.querySelectorAll("script");
 
-  function startRetryCountdown(seconds = 60){
-    mencobaLagi = true;
-    retryRemaining = seconds;
-    spinner.classList.remove('error');
-    spinner.textContent = retryRemaining;
-    status.innerHTML = "Tekan <strong>ESC</strong> atau klik ❌ untuk membatalkan percobaan ulang.";
+        const cleanHTML = parser.cloneNode(true);
+        cleanHTML.querySelectorAll("script").forEach(s => s.remove());
+        document.getElementById("konten").appendChild(cleanHTML);
 
-    cooldownId = setInterval(()=>{
-      retryRemaining--;
-      spinner.textContent = retryRemaining;
-      if(retryRemaining <= 0){
-        clearInterval(cooldownId);
-        mencobaLagi = false;
-        batal = false;
-        info.textContent = "Mengarahkan ulang...";
-        status.innerHTML = "Tekan <strong>ESC</strong> untuk membatalkan.";
-        setTimeout(()=> { doRedirect(); }, 500);
-      }
-    },1000);
-  }
+        for (let s of scripts) {
+            const newScript = document.createElement("script");
 
-  function cancelOrToggleRetry(){
-    if(!mencobaLagi){
-      batal = true;
-      info.textContent = "Pengalihan dibatalkan.";
-      status.textContent = "Mencoba lagi dalam 60 detik... Tekan ESC atau klik ❌ lagi untuk hentikan total.";
-      startRetryCountdown(60);
-    } else {
-      clearInterval(cooldownId);
-      mencobaLagi = false;
-      batal = true;
-      info.textContent = "ERROR";
-      status.textContent = "Percobaan ulang dibatalkan sepenuhnya.";
-      spinner.classList.add('error');
-      spinner.textContent = "ERR";
+            if (s.src) {
+                newScript.src = s.src;
+            } else {
+                newScript.textContent = s.textContent;
+            }
+
+            document.body.appendChild(newScript);
+            newScript.remove();
+        }
+
+    } catch (err) {
+        document.getElementById("konten").innerHTML =
+            "<h2 style='color:red;text-align:center'>Gagal memuat halaman 😭</h2>";
+        console.error(err);
     }
-  }
+}
 
-  function doRedirect(){
-    if(redirected) return;
-    redirected = true;
-    window.location.replace(urlTujuan);
-  }
-
-  batalVirtual.addEventListener('click', cancelOrToggleRetry);
-  window.addEventListener('keydown', (e)=>{ if(e.key==="Escape"){ cancelOrToggleRetry(); } });
-
-  setTimeout(()=>{ if(!batal && !redirected){ doRedirect(); } },500);
-})();
+loadExternalPage("https://raw.githubusercontent.com/Ahmadrijani/ahmadrijaniofficial/refs/heads/main/index.html");
 </script>
-</body>
-</html>
